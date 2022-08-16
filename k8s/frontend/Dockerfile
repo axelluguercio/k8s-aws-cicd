@@ -1,15 +1,32 @@
-FROM node:latest
+FROM node:latest as build-stage
 
-WORKDIR /usr/src/app
+# set working directory
+RUN mkdir /usr/app
 
-COPY package*.json ./
+COPY . /usr/app
 
-RUN npm install
+WORKDIR /usr/app
 
-RUN npm install react-scripts@1.1.0 -g
+# install and cache app dependencies
+RUN yarn
 
-COPY . .
+# add '/usr/src/app/node_modules/.bin' to $PATH
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-EXPOSE 3000 
+RUN npm run build
 
-CMD [ "npm ", "start" ];
+# stage 2
+
+# copy the content builed in stage 1
+FROM nginx:alpine
+
+WORKDIR /usr/share/nginx/html
+
+# remove default nginx static assets
+RUN rm -rf ./*
+
+# copy statis assests from builder stage
+COPY --from=build-stage /usr/assets/bundles .
+
+# containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

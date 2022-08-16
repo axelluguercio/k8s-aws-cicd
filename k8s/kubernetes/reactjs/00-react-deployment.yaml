@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
         - name: react-container
-          image: aluguercio/react-frontend:1.6 # pull de la imagen desde mi docker hub
+          image: aluguercio/react-frontend:1.7 # pull de la imagen desde mi docker hub
           ports:
-            - containerPort: 3000  
+            - containerPort: 80  
 ---
 apiVersion: v1
 kind: Service
@@ -27,5 +27,5 @@ spec:
     component: react
   ports:
   - protocol: TCP
-    port: 3000
-    targetPort: 3000
+    port: 8080
+    targetPort: 80
