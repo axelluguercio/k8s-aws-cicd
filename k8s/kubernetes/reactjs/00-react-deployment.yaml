@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: react-container
-          image: aluguercio/react-frontend:1.7 # pull de la imagen desde mi docker hub
+          image: aluguercio/react-frontend:1.8 # pull de la imagen desde mi docker hub
           ports:
             - containerPort: 80  
 ---
