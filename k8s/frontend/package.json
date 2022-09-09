@@ -1,5 +1,6 @@
 {
   "name": "frontendpublic",
+  "homepage": "http://predictionapp.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -61,6 +62,7 @@
     "redux-thunk": "^2.2.0",
     "reqwest": "^2.0.5",
     "resolve": "1.6.0",
+    "serve": "^14.0.1",
     "style-loader": "^0.19.0",
     "sw-precache-webpack-plugin": "0.11.4",
     "url-loader": "^0.6.2",
