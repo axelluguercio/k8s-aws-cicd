@@ -16,3 +16,5 @@ data:
   DB_NAME: predictiondb
   DB_USER: postgres
   DATABASE: postgres
+  BASE_URL: "http://api.predictionapp.com"
+  SITE_ID: "1"

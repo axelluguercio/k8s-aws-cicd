@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: django-container
-          image: aluguercio/django-backend:1.2 # pull la imagen de mi docker hub
+          image: aluguercio/django-backend:1.3 # pull la imagen de mi docker hub
           ports:
             - containerPort: 8000
           command: ["sh", "-c"] # ejecuta dos comandos en shell sh y si el primero falla no ejecuta el segundo
