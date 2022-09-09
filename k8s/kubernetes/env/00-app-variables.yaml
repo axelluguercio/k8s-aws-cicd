@@ -19,5 +19,11 @@ data:
   DB_ENGINE: "django.db.backends.postgresql_psycopg2"
   DB_DATABASE: predictiondb
   DB_USER: postgres
+<<<<<<< HEAD:k8s/kubernetes/env/00-app-variables.yaml
   DB_HOST: postgres-service
   DB_PORT: "5432"
+=======
+  DATABASE: postgres
+  BASE_URL: "http://api.predictionapp.com"
+  SITE_ID: "1"
+>>>>>>> ecda68ebe6c48f3cb742a04f92c7b8a8ab839c20:k8s/kubernetes/django/00-django-configmap.yaml

@@ -14,7 +14,11 @@ spec:
     spec:
       containers:
         - name: django-container
+<<<<<<< HEAD
           image: aluguercio/django-backend:1.1 # pull my image from docker hub
+=======
+          image: aluguercio/django-backend:1.3 # pull la imagen de mi docker hub
+>>>>>>> ecda68ebe6c48f3cb742a04f92c7b8a8ab839c20
           ports:
             - containerPort: 8000
           command: ["sh", "-c"]
