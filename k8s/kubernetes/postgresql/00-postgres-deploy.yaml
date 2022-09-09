@@ -1,3 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 150M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/data/postgres_data"
+  persistentVolumeReclaimPolicy: Retain
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 150M
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,36 +53,25 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data # monta el volume claim declarado en el subdirectorio
-              subPath: postgresql
+              subPath: postgres
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
+                  name: app-secrets
                   key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: POSTGRES_USER
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: postgres-variables
+                  name: app-variables
                   key: POSTGRES_DB
-            - name: POSTGRES_INITDB_ARGS
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-variables
-                  key: INIT_DB
+---
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-persistent-volume-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 150M
----
 apiVersion: v1
 kind: Service
 metadata:

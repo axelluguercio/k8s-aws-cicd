@@ -14,18 +14,64 @@ spec:
     spec:
       containers:
         - name: django-container
-          image: aluguercio/django-backend:1.2 # pull la imagen de mi docker hub
+          image: aluguercio/django-backend:1.1 # pull my image from docker hub
           ports:
             - containerPort: 8000
-          command: ["sh", "-c"] # ejecuta dos comandos en shell sh y si el primero falla no ejecuta el segundo
-          args: ["./entrypoint.sh && gunicorn backend.wsgi:application --bind 0.0.0.0:8000"]
-          envFrom: # get las variables y credenciales del configmap y secrets
-          - configMapRef:
-              name: django-variables
-          - secretRef:
-              name: django-secrets
+          command: ["sh", "-c"]
+          args: ["gunicorn backend.wsgi:application --bind 0.0.0.0:8000"]
+          env:
+            - name: DJANGO_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DJANGO_ENV
+            - name: SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: SECRET_KEY
+            - name: DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DEBUG
+            - name: DJANGO_ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DJANGO_ALLOWED_HOSTS
+            - name: DB_ENGINE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DB_ENGINE
+            - name: DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DB_DATABASE
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DB_HOST 
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-variables
+                  key: DB_PORT         
 ---
-apiVersion: v1 # servicio de django
+apiVersion: v1 # django service
 kind: Service
 metadata:
   name: django-service
