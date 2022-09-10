@@ -115,13 +115,13 @@ ROOT_URLCONF = 'backend.urls'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 #############################################
 DATABASES = {
-    'default': {
-        'ENGINE': env('DB_ENGINE'),
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASS'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+    "default": {
+        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("DB_USER", "user"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "password"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
 }
 
@@ -239,6 +239,3 @@ WEBPACK_LOADER = {
 
 if env("ENVIRONMENT", "local") != 'local':
     COMPRESS_OFFLINE = True
-
-BASE_URL = env('BASE_URL')
-SITE_ID = env('SITE_ID')
