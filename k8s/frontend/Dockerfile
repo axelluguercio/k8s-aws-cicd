@@ -1,40 +1,26 @@
-FROM node:12.18.3-alpine3.9 as build-stage
+FROM node:14.20.0-alpine3.16 as build-stage
 
 # set working directory
 WORKDIR /usr/src/app
 
-COPY ./package.json .
-# install dependencies and avoid `node-gyp rebuild` errors
-RUN apk add --no-cache --virtual .gyp \
-        python \
-        make \
-        g++ \
-    && npm install \
-    && apk del .gyp
-
-# copy our react project
-COPY ./ .
-
 # add '/usr/src/app/node_modules/.bin' to $PATH
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-# perform npm build
-ARG API_SERVER
-ENV REACT_APP_API_SERVER=${API_SERVER}
-RUN REACT_APP_API_SERVER=${API_SERVER} \ 
-  npm run build
+COPY ./package.json /usr/src/app/
+COPY ./yarn.lock /usr/src/app/
+RUN yarn
+COPY . /usr/src/app
+RUN yarn build
 
-# stage 2
+# stage 2 - build the final image and copy the react build files
+FROM nginx:1.17.8-alpine
 
-# copy the content builed in stage 1
-# pull official base image
-FROM node:12.18.3-alpine3.9 
+COPY --from=build-stage /usr/src/bundles/assets /usr/share/nginx/html
 
-# set work directory
-WORKDIR /usr/src/app
+RUN rm /etc/nginx/conf.d/default.conf
 
-# install serve - deployment static server suggested by official create-react-app
-RUN npm install -g serve
+COPY nginx.conf /etc/nginx/conf.d
 
-# copy our build files from our builder stage
-COPY --from=build-stage /usr/src/app/build ./build
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
